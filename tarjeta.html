@@ -14,99 +14,96 @@
     <link rel="short icon" href="img/Logo.png">    
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <script src="//code.tidio.co/1nqko5ggcaruplblak0qedufzdhpt0xr.js" async></script>
+	<style>
+        .container{
+            max-width: 400px;
+            margin: 10;
+            margin-top: 100px;
+            font-family: sans-serif;
+			background: #25262d;
+			padding: 20px;
+			border-radius: 20px;
+        }
+        h1{
+            margin-bottom: 30px;
+        }
+        input,select{
+            width: calc(100%);
+            display: block;
+            padding: 6px;
+            font-size: 20px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            outline: none;
+        }
+        
+    </style>
 </head>
 <body>
     
     <header class="showcase">
         <div class="showcase-top">
             <img src="img/Logo.png" alt="" />
-            <a href="index.html" class="btn btn-rounded">Inicio</a>
+			<a id="logout-button" class="btn btn-rounded" value="ok">Cerrar Sesion</a>            
         </div>
         <div class="showcase-contentlogin">
             <div class="contenedor__tarjeta">
-				<section id='tarjeta' class="tarjeta">
-					
-					<div class="tarjeta-frente">
-						<div class="logoBanco"  id="logoMarca">
-						</div> 
-						<img src="img/chip.png" alt="chip" class="chip"> 
-						<div class="datos">
-							<div class="grupo" id="numero">
-								<p id="numeroTarjeta">#### #### #### ####</p>
-							</div>
-							<div class="flexbox">
-								<div class="grupo" id="nombre">
-									<p class="label">Nombre:</p>
-									<p class="nombre">Juan Pérez</p>
-								</div>
-								<div class="grupo" id="vto">
-									<p class="label">Vencimiento:</p>
-									<p class="vto"><span class="mm">MM</span>/<span class="aa">AA</span></p>
-								</div>
-							</div>
-						</div>
-					</div>
-		
-					<div class="tarjeta-dorso">
-						<div class="barraMagnetica"></div>
-						<section class="firmaCVV">
-							<div class="firma">
-								<p>Firma</p>
-								<div id="firma"><p></p></div>
-							</div>
-							<div class="cvv">
-								<p>CVV</p>
-								<div id="codigoV"><p></p></div>
-							</div>
-						</section>
-						<p class="leyenda">Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora voluptas dolores neque delectus quidem! Est eos nesciunt laboriosam perspiciatis maiores sequi pariatur vitae dignissimos dicta totam, officia laborum, eveniet recusandae!</p>
-					</div>
-		
-				</section>
+				<div class="container">
+					<h1>Registrar Compra</h1>
+					<div class="form">
+						<label>Nombre</label>
+						<input type="text" id="nombre" >
 			
-				<section class="boton">
-					<button class="abrirForm" id="btnAbrirForm">
-						<i class="fas fa-arrow-down"></i>
-					</button>
-				</section>
-		
-				<form action="" class="formulario" id="form">
-					<div class="grupo">
-						<label for="numTarj" class="form_label">Número de tarjeta:</label>
-						<input type="text" name="numTarj" id="numTarj" class="form_input" maxlength="19" autocomplete="off"/>
+						<label>Correo</label>
+						<input type="text" id="correo">            
+			
+						<label>Plan</label>
+						<select  id="plan">
+							<option>Plan Basic</option>          
+							<option>Plan Medium</option>          
+							<option>Plan Premium</option>                
+						</select>
+			
+						<label>Fecha de Suscripcion</label>             
+						<input type="date" id="fechaini" class="form-control" >
+						<button class="btn btn-rounded">COMPRAR</button>
 					</div>
-					<div class="grupo">
-						<label for="nombre" class="form_label">Nombre (como figura en la tarjeta):</label>
-						<input type="text"  name="nombre" id="nombre" class="form_input" maxlength="19" placeholder=""/>
-					</div>
-					<div class="flexbox-vencimiento">
-						<div class="grupo-vencimiento">
-							<label for="vtoTarjeta" class="form_label">Vencimiento:</label>
-							<div class="grupoVto">
-								<div class="grupo-select">
-									<select name="mes" id="vtoTarjeta">
-										<option disabled selected>Mes</option>
-									</select>							
-								</div>
-								<div class="grupo-select">
-									<select name="anio" id="vtoAnio">
-										<option disabled selected>Año</option>
-									</select>							
-								</div>
-							</div>
-						</div>
-						<div class="grupo">
-							<label for="cvv" class="form_label">Código de verificación:</label>
-							<input type="text"  name="cvv" id="cvv" class="form_input" maxlength="3" placeholder="CVV"/>
-						</div>
-					</div>
-					<button type="submit" class="btn_confirmar">CONFIRMAR</button>
-				</form>
-		
-			</div>
+				</div>
         </div>
     </header> 	      
 
         <script src="js/scriptarjeta.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+		<script src="js/db.js"></script>
+
+
+		<!-- <script type="module" src="firebaseconfig.js"></script> -->
+		<script type="module">
+			import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
+			import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+	  
+			const firebaseConfig = {
+		  apiKey: "AIzaSyC_ays3s0ny_zGe5BTV81uvbuOlB5H_Xxg",
+		  authDomain: "womtv-web.firebaseapp.com",
+		  projectId: "womtv-web",
+		  storageBucket: "womtv-web.appspot.com",
+		  messagingSenderId: "834801293575",
+		  appId: "1:834801293575:web:0153511a2129ed08a9cda2"
+		};	  
+			// Initialize Firebase
+			const app = initializeApp(firebaseConfig);
+			let logoutButton = document.getElementById("logout-button");
+			console.log(logoutButton);
+	  
+			logoutButton.addEventListener("click", (e) => {
+			  const auth = getAuth(app);
+			  signOut(auth)
+				.then(() => {            
+				  location.href = "./login.html";
+				})
+				.catch((error) => {});
+			});
+		  </script>
 </body>
 </html>

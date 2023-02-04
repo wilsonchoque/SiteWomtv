@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <style>
+        .container{
+            max-width: 900px;
+            font-family: sans-serif;
+            margin: auto;
+        }
+        h1{
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        table{
+            width: 100%;
+            border-spacing: 0px;
+        }
+        th{
+            text-align: left;
+        }
+        table td:focus{
+            background-color: #eae9e9;
+        }
+        td:nth-child(3){
+            width: 400px;
+        }
+        td:last-child{
+            text-align: right;
+        }
+        table th,
+        table td{
+            padding: 15px 0px;
+            border-bottom: 1px solid #cacaca;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin -Datos de Usuarios</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Plan</th>
+                    <th>Fecha de Inicio</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+<!-- firebase CDN -->
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+        databaseURL: "https://womtv-web-default-rtdb.firebaseio.com"
+    }
+    firebase.initializeApp(firebaseConfig)
+    // aquí se crea la conexión con la base de datos
+    const database = firebase.database()
+
+    const dataContainer = document.querySelector('tbody')
+
+    // proporcione la ruta completa para obtener los datos tal como se indica durante el envío
+    var fetchedData = database.ref('Plan de servicio/')
+    fetchedData.on('value', (snapshot) => {
+        var data = snapshot.val()
+        // ahora establece datos en la tabla
+        var htmlData = ''
+        for(var key in data){
+            var value = data[key]
+            htmlData += `
+                <tr>
+                    <td>${value.name}</td>
+                    <td>${value.email}</td>
+                    <td>${value.plan}</td>
+                    <td>${value.fechaini}</td>
+                    <td>
+                        <button onclick="readyForUpdate('${key}', this)">Editar</button>
+                        <button class="Eliminar" onclick="removeMess('${key}')">Eliminar</button>
+                    </td>
+                </tr>
+            `;
+        }
+        // usamos identificaciones únicas como referencia para eliminar y actualizar datos
+        dataContainer.innerHTML = htmlData
+    })
+
+    // eliminar función de mensaje
+    function removeMess(uniqueId){
+        database.ref('Plan de servicio/' + uniqueId).remove()
+       // esta eliminación en tiempo real eliminará los datos sin cargarlos
+        // a medida que se actualizan los datos, se recuperan y se vuelven a representar en html automáticamente
+    }
+
+    // función de actualización 
+    function readyForUpdate(uniqueId, elem){
+        
+        var siblingTd = elem.parentElement.parentElement.getElementsByTagName('td')
+        // convertir los tres primeros td en editables
+        for(var i = 0; i < siblingTd.length-1; i++){
+            siblingTd[i].contentEditable = true
+            siblingTd[i].classList.add('temp-update-class')
+        }
+       // también cambia la función onclick
+        elem.setAttribute('onclick', `updateNow('${uniqueId}')`)
+        elem.innerHTML = 'Send'
+    }
+
+    // crear la función actualizar ahora
+    function updateNow(uniqueId){
+        var contentId = document.querySelectorAll('.temp-update-class')
+        // ahora crea obj usando las mismas claves que se usaron durante el envío
+        var obj = {
+            'name': contentId[0].textContent,
+            'email': contentId[1].textContent,
+            'plan': contentId[2].textContent,
+            'fechaini':contentId[3].textContent,
+        }
+        // crear una referencia a los datos primero donde se actualizarán los datos
+         // uniqueId será el id de cada mensaje en db
+        var listRef = database.ref('Plan de servicio/' + uniqueId)
+        // ahora proporciona datos actualizados
+        listRef.update(obj)
+        // después de la actualización, los nuevos datos se volverán a representar automáticamente
+         // igual que durante la eliminación
+    }
+
+</script>
+</body>
+</html>

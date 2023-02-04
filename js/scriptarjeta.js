@@ -1,4 +1,4 @@
-const tarjeta = document.querySelector('#tarjeta'),
+//**const tarjeta = document.querySelector('#tarjeta'),
       botonAbrirForm = document.querySelector('#btnAbrirForm'),
       formulario = document.querySelector("#form"),
       numeroTarjeta = document.querySelector('#tarjeta #numeroTarjeta'),
